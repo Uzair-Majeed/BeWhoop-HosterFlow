@@ -19,12 +19,13 @@ function Header() {
       </div>
 
       <div className="header-right">
-        <img src={notificationIcon} alt="Notifications" className="header-icon" />
 
+        {/*
+        <img src={notificationIcon} alt="Notifications" className="header-icon" />
         <div className="language-selector">
           <img src={flag} alt="Flag" className="flag-icon" />
           <span>English</span>
-        </div>
+        </div>*/}
 
         <div className="user-info">
           <img

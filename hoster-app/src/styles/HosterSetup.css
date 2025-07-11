@@ -50,7 +50,7 @@ html, body {
 }
 
 .hostersetup-text-group h1 {
-  font-family: 'BricolageGrotesque-Medium', sans-serif;
+  font-family: 'BricolageGrotesque-Medium', sans-serif ;
   font-size: 32px;
   margin-bottom: 0.5rem;
   color: white !important;
@@ -67,6 +67,7 @@ html, body {
 
 .hostersetup-title-group {
   margin-bottom: 3rem;
+  margin-left: 2rem;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -77,7 +78,7 @@ html, body {
   font-family: 'BricolageGrotesque-Medium', sans-serif;
   font-size: 32px;
   margin-bottom: 0.5rem;
-  color: black !important;
+  color: 060606 !important;
 }
 
 .hostersetup-title-group p {
@@ -86,7 +87,7 @@ html, body {
   margin-left: 0.5rem;
   max-width: 80%;
   text-align: center;
-  color: black !important;
+  color: 060606 !important;
 }
 
 .hostersetup-error-fields {
@@ -109,7 +110,7 @@ html, body {
 
 .hostersetup-label1 {
   margin-top: 20px;
-  margin-left: 0 !important;
+  margin-left: 2rem;
   font-family: 'BricolageGrotesque-Bold', sans-serif;
   font-size: 24px;
   color: #060606;
@@ -118,7 +119,7 @@ html, body {
 
 .hostersetup-label3 {
   margin-top: 20px;
-  margin-left: 0 !important;
+  margin-left: 2rem;
   font-family: 'BricolageGrotesque-Bold', sans-serif;
   font-size: 24px;
   color: #060606 !important;
@@ -128,6 +129,7 @@ html, body {
 .hostersetup-select-input {
   width: 81%;
   padding: 0.75rem;
+  margin-left: 2rem;
   border-radius: 8px;
   background-color: #F5F6FA;
   border: 1px solid #D5D5D5;
@@ -140,6 +142,7 @@ html, body {
 .hostersetup-simple-input {
   width: 80.5%;
   padding: 0.75rem;
+  margin-left: 2rem;
   border-radius: 8px;
   background-color: #F5F6FA;
   border: 1px solid #D5D5D5;
@@ -149,11 +152,21 @@ html, body {
   color: #A6A6A6;
   margin-bottom: 2rem;
 }
+.hostersetup-simple-input:focus {
+  outline: none;
+  border-color: #818181; /* light grey */
+}
 
+
+.hostersetup-select-input:focus {
+  outline: none;
+  border-color: #818181; /* light grey */
+}
 .hostersetup-text-container {
   width: 80%;
-  height: 150px;
+  height: 130px;
   padding: 0.75rem;
+  margin-left: 2rem;
   border-radius: 8px;
   background-color: #F5F6FA;
   box-sizing: border-box;
@@ -161,6 +174,11 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+.hostersetup-text-container:focus{
+  
+  outline: none;
+  border-color: #818181; /* light grey */
 }
 
 .hostersetup-events {
@@ -171,7 +189,7 @@ html, body {
   border: none;
   font-family: 'BricolageGrotesque-Bold', sans-serif;
   font-size: 18px;
-  color: #060606;
+  color: #A6A6A6;
   outline: none;
   margin-bottom: 1rem;
 }
@@ -185,13 +203,13 @@ html, body {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .hostersetup-event-chip {
   background-color: #F94200;
   border-radius: 20px;
-  padding: 6px 12px;
+  padding: 4px 12px;
   font-size: 14px;
   font-family: 'BricolageGrotesque-Bold', sans-serif;
   color: white;
@@ -211,8 +229,9 @@ html, body {
 
 .hostersetup-available-events {
   display: flex;
+  margin-left: 2rem;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 2rem;
   flex-wrap: wrap;
 }
 

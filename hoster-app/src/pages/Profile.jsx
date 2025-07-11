@@ -2,11 +2,33 @@ import '../styles/Profile.css';
 import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import defaultImage from '../assets/UploadPic.png';
-import { useContext } from 'react';
+import { useContext, useRef } from 'react';
 import { HosterContext } from '../contexts/HosterContext.jsx';
 
 function Profile() {
-  const { hosterData } = useContext(HosterContext);
+  const { hosterData, setHosterData } = useContext(HosterContext);
+  const fileInputRef = useRef(null);
+
+  const handlePhotoSelect = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      setHosterData((prev) => ({
+        ...prev,
+        profilePhoto: file,
+      }));
+    }
+  };
+
+  const triggerPhotoUpload = () => {
+    fileInputRef.current.click();
+  };
+
+  const getProfileImage = () => {
+    if (hosterData.profilePhoto) {
+      return URL.createObjectURL(hosterData.profilePhoto);
+    }
+    return defaultImage;
+  };
 
   return (
     <div className="dashboard-container">
@@ -17,12 +39,23 @@ function Profile() {
 
         <div className="scrollable">
           <div className="dashboard-body">
-            <img
-              src={defaultImage}
-              alt="Profile"
-              className="profile-avatar"
-            />
-            <h2>{hosterData.firstName} {hosterData.lastName}</h2>
+            <div style={{ position: 'relative', display: 'inline-block' }}>
+              <img
+                src={getProfileImage()}
+                alt="Profile"
+                className="profile-avatar"
+                onClick={triggerPhotoUpload}
+                style={{ cursor: 'pointer' }}
+              />
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handlePhotoSelect}
+              />
+            </div>
+            <h2>{hosterData.fullName}</h2>
             <p>Event Organizer</p>
           </div>
 

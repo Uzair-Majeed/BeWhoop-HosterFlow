@@ -1,31 +1,39 @@
-@font-face {
-  font-family: 'BricolageGrotesque-Medium';
-  src: url('../assets/BricolageGrotesque-Medium.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'NunitoSans';
-  src: url('../assets/NunitoSans.ttf') format('truetype');
-}
-@font-face {
-  font-family: 'BricolageGrotesque-Bold';
-  src: url('../assets/BricolageGrotesque-Bold.ttf') format('truetype');
-}
 
+@font-face {
+  font-family: 'DM-Sans';
+  src: url('../assets/DM-Sans.ttf') format('truetype');
+}
 .vendor-card {
-  width: 300px;
-  min-height: 400px;
+  width: 350px;
+  min-height: 350px;
   background-color: white;
   border-radius: 16px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   padding: 24px;
   text-align: center;
-  font-family: 'BricolageGrotesque-Bold', sans-serif;
+  font-family: 'DM-Sans', sans-serif !important;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
+.vendor-name-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vendor-check-icon-inline {
+  color: #f97316;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.vendor-check-icon-inline:hover {
+  transform: scale(1.1);
+}
 
 
 .vendor-image {
@@ -33,15 +41,14 @@
   height: 100px;
   border-radius: 999px;
   object-fit: cover;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 /* Name */
 .vendor-name {
-  font-size: 18px; /* was 16px */
+  font-size: 18px !important; /* was 16px */
   font-weight: bold;
   color: #1f2937;
-  margin: 0;
 }
 
 /* Tick Badge */
@@ -59,21 +66,21 @@
 .vendor-role {
   color: #6b7280;
   margin-top: 6px;
-  font-size: 15px; /* was 13px */
+  font-size: 16px !important; /* was 13px */
 }
 
 /* Location */
 .vendor-location {
   font-weight: 500;
-  font-size: 15px; /* was 13px */
+  font-size: 16px !important; /* was 13px */
   margin-top: 4px;
 }
 
 /* Price */
 .vendor-price {
   color: #dc2626;
-  font-weight: bold;
-  font-size: 16px; /* was 14px */
+  font-weight: 600;
+  font-size: 18px !important; /* was 14px */
   margin-top: 8px;
 }
 
@@ -83,14 +90,16 @@
   flex-wrap: wrap;
   gap: 8px;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
 }
 
 /* Each Tag */
 .vendor-tag {
   background-color: #FFE7DE;
   color: #F94200;
-  font-size: 13px; /* was 11px */
+  font-size: 16px !important; /* was 11px */
+  font-weight: 600;
   padding: 5px 12px;
   border-radius: 999px;
 }

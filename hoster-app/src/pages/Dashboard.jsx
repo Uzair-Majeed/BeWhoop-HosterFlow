@@ -39,29 +39,29 @@ function Dashboard() {
                 <AnalyticsChart />
               </div>
               <div className="dashboard-views">
-                <p>Total Event views</p>
-                <p className="dashboard-views-count">10,000</p>
-              </div>
+                <div className="dashboard-metric">
+                  <p>Total Event Views</p>
+                  <p className="dashboard-views-count">10,000</p>
+                </div>
+                <div className="dashboard-metric">
+                    <p>Click Through Rate</p>
+                    <p className="dashboard-views-count">45%</p>
+                  </div>
+                  <div className="dashboard-metric">
+                    <p>Conversion Rate</p>
+                    <p className="dashboard-views-count">10%</p>
+                  </div>
+                  <div className="dashboard-metric">
+                    <p>Attendees</p>
+                    <p className="dashboard-views-count">10,000</p>
+                  </div>
+                  <div className="dashboard-metric">
+                    <p>Tickets Sold</p>
+                    <p className="dashboard-views-count">456</p>
+                  </div>
+                </div>
             </div>
 
-            <div className="more-stats">
-              <div className="more-views">
-                <p>Click through rate</p>
-                <p className="dashboard-views-count">45%</p>
-              </div>
-              <div className="more-views">
-                <p>Conversion rate</p>
-                <p className="dashboard-views-count">10%</p>
-              </div>
-              <div className="more-views">
-                <p>Attendees</p>
-                <p className="dashboard-views-count">10,000</p>
-              </div>
-              <div className="more-views">
-                <p>Ticket Sold</p>
-                <p className="dashboard-views-count">456</p>
-              </div>
-            </div>
 
             <div className="dashboard-events">
               <div className="dashboard-events-header">

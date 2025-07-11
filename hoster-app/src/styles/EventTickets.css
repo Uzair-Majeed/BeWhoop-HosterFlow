@@ -11,31 +11,9 @@
   src: url('../assets/BricolageGrotesque-Bold.ttf') format('truetype');
 }
 
-.tickets-dashboard-container {
-  display: flex;
-  height: 100vh;
-  font-family: 'BricolageGrotesque-Bold', sans-serif;
-}
-
-.tickets-main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: hidden;
-}
-
-.tickets-edit-profile-scrollable {
-  overflow-y: auto;
-  padding: 20px;
-  height: calc(100vh - 80px);
-  width: 100%;
-}
-
-.tickets-form-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-left: 200px;
+@font-face {
+  font-family: 'DM-Sans';
+  src: url('../assets/DM-Sans.ttf') format('truetype');
 }
 
 .tickets-label1,
@@ -46,33 +24,14 @@
   margin-bottom: 5px;
 }
 
-.tickets-save-button-container {
-  width: 95%;
-  display: flex;
-  justify-content: flex-end !important;
-}
-
-.tickets-save-button {
-  background-color: #BE0000;
-  color: white;
-  padding: 1rem 8rem;
-  border: none;
-  border-radius: 30px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-family: 'BricolageGrotesque-Bold', sans-serif;
-  margin-left: 25rem;
-  margin-bottom: 1rem;
-}
 
 .tickets-box {
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   background-color: #f5f6fa;
   border: 1px solid #d5d5d5;
   border-radius: 10px;
   padding: 20px;
-  margin-top: 5rem;
   margin-bottom: 20px;
 }
 
@@ -89,18 +48,12 @@
   cursor: pointer;
 }
 
-.tickets-description-input {
-  width: 100%;
-  height: 200px;
-  border-radius: 8px;
-  background-color: #f5f6fa;
-  border: 1px solid #d5d5d5;
-  font-family: 'BricolageGrotesque-Bold', sans-serif;
-  font-size: 14px;
-  color: #333;
-  resize: vertical;
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: #818181;
 }
-
 .tickets-select-input,
 .tickets-simple-input {
   width: 100%;
@@ -108,7 +61,8 @@
   border-radius: 8px;
   background-color: #f5f6fa;
   border: 1px solid #d5d5d5;
-  font-family: 'BricolageGrotesque-Bold', sans-serif;
+  font-family: 'DM-Sans';
+  font-weight: 600;
   font-size: 16px;
   color: #333;
 }

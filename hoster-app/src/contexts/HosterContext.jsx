@@ -4,14 +4,24 @@ export const HosterContext = createContext();
 
 export const HosterProvider = ({ children }) => {
   const [hosterData, setHosterData] = useState({
-    firstName: '',
-    lastName:'',
+    fullName: '',
     email : '',
     password : '',
     eventFrequency : '',
     avgSize : 0,
     eventTypes : [],
+    location : '',
+    customURL:'',
+    startTime:Date.now(),
+    endTime:Date.now(),
+    tickets: [],
+    bankDetails:{
+      selectedBank:'',
+      accountNo:'',
+      accountName:'',
+    },
     portfolio: [],
+    profilePhoto: null,
   });
 
   return (

@@ -1,10 +1,10 @@
-import { useState, useRef,useEffect ,useContext } from 'react';
+import { useState, useRef, useEffect, useContext } from 'react';
 import './FileUpload.css';
 import Vector from '../assets/Vector.png';
 import Trash from '../assets/Trash.png';
 import { HosterContext } from '../contexts/HosterContext';
 
-function FileUpload() {
+function FileUpload({ onFileChange }) {
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null);
   const { hosterData, setHosterData } = useContext(HosterContext);
@@ -17,21 +17,22 @@ function FileUpload() {
     'video/mp4',
     'audio/mpeg'
   ];
-  useEffect(() => {
-  if (files.length > 0) {
-    setHosterData((prev) => {
-      const existing = prev.portfolio || [];
-      const unique = files.filter(
-        (file) => !existing.some((f) => f.name === file.name && f.size === file.size)
-      );
-      return {
-        ...prev,
-        portfolio: [...existing, ...unique],
-      };
-    });
-  }
-}, [files]);
 
+  useEffect(() => {
+    if (files.length > 0) {
+      setHosterData((prev) => {
+        const existing = prev.portfolio || [];
+        const unique = files.filter(
+          (file) => !existing.some((f) => f.name === file.name && f.size === file.size)
+        );
+        return {
+          ...prev,
+          portfolio: [...existing, ...unique],
+        };
+      });
+    }
+    if (onFileChange) onFileChange(files);
+  }, [files]);
 
   const handleDrop = (e) => {
     e.preventDefault();
@@ -61,6 +62,12 @@ function FileUpload() {
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleDelete = (index) => {
+    const updatedFiles = files.filter((_, i) => i !== index);
+    setFiles(updatedFiles);
+    if (onFileChange) onFileChange(updatedFiles);
   };
 
   return (
@@ -116,6 +123,21 @@ function FileUpload() {
                   }}
                 />
               )}
+              
+{file.type.startsWith('video/') && (
+  <video
+    src={URL.createObjectURL(file)}
+    style={{
+      width: '40px',
+      height: '40px',
+      objectFit: 'cover',
+      borderRadius: '4px'
+    }}
+    controls={false}
+    muted
+    preload="metadata"
+  />
+)}
               {file.name}
               <span style={{ fontSize: '14px', color: '#666' }}>
                 {file.size > 1024 * 1024
@@ -125,16 +147,14 @@ function FileUpload() {
               </span>
               <img
                 src={Trash}
-                alt="trash.png"
+                alt="trash"
                 style={{
                   width: '20px',
                   height: '20px',
                   cursor: 'pointer',
                   marginLeft: 'auto'
                 }}
-                onClick={() => {
-                  setFiles((prev) => prev.filter((_, i) => i !== index));
-                }}
+                onClick={() => handleDelete(index)}
               />
             </li>
           ))}

@@ -1,21 +1,35 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/BeWhoopLogo.png';
-import msgLogo from '../assets/message-outline.png';
-import profile from '../assets/profile.png'
-import clock from '../assets/clock.png';
-import dashLogo from '../assets/dashLogo.png';
-import marketLogo from '../assets/market.png'
-import eventLogo from '../assets/eventLogo.png'
-import settings from '../assets/Settings.png';
-import logout from '../assets/Logout.png';
+import { useContext } from 'react';
+import { HosterContext } from '../contexts/HosterContext';
+import {
+  FaExpand,
+  FaCalendarDays,
+  FaCalendarPlus,
+  FaMessage,
+  FaStreetView,
+  FaRegUser,
+  FaGears,
+  FaUnlock,
+} from 'react-icons/fa6'; 
 import './Sidebar.css';
 
 function Sidebar() {
+  const { setHosterData } = useContext(HosterContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
 
   const isActive = (path) => currentPath === path;
+
+  const handleLogout = () => {
+    // Clear context
+    setHosterData({});
+    // Remove token
+    localStorage.removeItem('token');
+    // Redirect to home/login
+    navigate('/');
+  };
 
   return (
     <aside className="sidebar">
@@ -25,46 +39,87 @@ function Sidebar() {
 
       <div className="nav-links">
         <ul>
-          <li className={`nav-item ${isActive('/Dashboard') ? 'active' : ''}`} onClick={() => navigate('/Dashboard')}>
-            <img src={clock} alt="Person" className="nav-icon" />
+          <li
+            className={`nav-item ${isActive('/Dashboard') ? 'active' : ''}`}
+            onClick={() => navigate('/Dashboard')}
+          >
+            <FaExpand className="nav-icon" />
             <a>Dashboard</a>
           </li>
-          <li className={`nav-item ${isActive('/Profile') ? 'active' : ''}`} onClick={() => navigate('/Profile')}>
-            <img src={profile} alt="Profile" className="nav-icon" />
-            <a>Profile</a>
-          </li>
-          
-          <li className={`nav-item ${isActive('/CreateEvent')  || isActive('/EventTickets') || isActive('/BankDetails')? 'active' : ''}`} onClick={() => navigate('/CreateEvent')}>
-            <img src={eventLogo} alt="CreateEvent" className="nav-icon" />
-            <a>Create an Event</a>
+
+          <hr className="sidebar-divider" />
+
+          <li
+            className={`nav-item ${
+              isActive('/CreateEvent') ||
+              isActive('/EventTickets') ||
+              isActive('/BankDetails')
+                ? 'active'
+                : ''
+            }`}
+            onClick={() => navigate('/CreateEvent')}
+          >
+            <FaCalendarDays className="nav-icon" />
+            <a>My Events</a>
           </li>
 
-          
-          <li className={`nav-item ${isActive('/Marketplace') ? 'active' : ''}`} onClick={() => navigate('/Marketplace')}>
-            <img src={marketLogo} alt="Marketplace" className="nav-icon" />
-            <a>Vendor Marketplace</a>
+          <li
+            className={`nav-item ${
+              isActive('/CreateEvent') ||
+              isActive('/EventTickets') ||
+              isActive('/BankDetails')
+                ? 'active'
+                : ''
+            }`}
+            onClick={() => navigate('/CreateEvent')}
+          >
+            <FaCalendarPlus className="nav-icon" />
+            <a>New Event</a>
           </li>
 
-          <li className={`nav-item ${isActive('/Messages') ? 'active' : ''}`} onClick={() => navigate('/Messages')}>
-            <img src={msgLogo} alt="Messages" className="nav-icon" />
+          <li
+            className={`nav-item ${isActive('/Messages') ? 'active' : ''}`}
+            onClick={() => navigate('/Messages')}
+          >
+            <FaMessage className="nav-icon" />
             <a>Messages</a>
           </li>
 
+          <hr className="sidebar-divider" />
 
-      <hr className="sidebar-divider" />
-          
-          <li className={`nav-item ${isActive('/Settings') ? 'active' : ''}`} onClick={() => navigate('/Settings')}>
-            <img src={settings} alt="Settings" className="nav-icon" />
+          <li
+            className={`nav-item ${isActive('/Marketplace') ? 'active' : ''}`}
+            onClick={() => navigate('/Marketplace')}
+          >
+            <FaStreetView className="nav-icon" />
+            <a>Vendors</a>
+          </li>
+
+          <hr className="sidebar-divider" />
+
+          <li
+            className={`nav-item ${isActive('/Profile') ? 'active' : ''}`}
+            onClick={() => navigate('/Profile')}
+          >
+            <FaRegUser className="nav-icon" />
+            <a>My Profile</a>
+          </li>
+
+          <li
+            className={`nav-item ${isActive('/Settings') ? 'active' : ''}`}
+            onClick={() => navigate('/Settings')}
+          >
+            <FaGears className="nav-icon" />
             <a>Settings</a>
           </li>
 
-          <li className={`nav-item ${isActive('/Logout') ? 'active' : ''}`} onClick={() => navigate('/')}>
-            <img src={logout} alt="Logout" className="nav-icon" />
+          {/* Fixed: call handleLogout onClick */}
+          <li className="nav-item" onClick={handleLogout}>
+            <FaUnlock className="nav-icon" />
             <a>Logout</a>
           </li>
         </ul>
       </div>
-
     </aside>
   );
 }

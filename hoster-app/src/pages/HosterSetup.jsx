@@ -12,7 +12,6 @@ function HosterSetup() {
   const [availableEvents, setavailableEvents] = useState(["Lifestyle", "Cultural", "Comedy"]);
   const [eventFrequency, setEventFrequency] = useState('');
   const [avgSize, setAvgSize] = useState('');
-  const [error, setError] = useState('');
 
   const { hosterData, setHosterData } = useContext(HosterContext);
   const navigate = useNavigate();
@@ -40,12 +39,8 @@ function HosterSetup() {
     }
   };
 
-  const handleNext = async () => {
-    if (!eventFrequency.trim()) return setError('Please enter your event frequency.');
-    if (!avgSize) return setError('Please select an average size of event.');
-    if (events.length === 0) return setError('Please add at least one event type.');
-
-    setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
     const updatedData = {
       ...hosterData,
@@ -54,11 +49,10 @@ function HosterSetup() {
       eventTypes: events,
     };
 
-    console.log(updatedData);
     setHosterData(updatedData);
 
     const payload = {
-      fullName: `${hosterData.firstName || 'John'} ${hosterData.lastName || 'Doe'}`,
+      fullName: `${hosterData.fullName || 'John Doe'}`,
       email: hosterData.email || 'default@email.com',
       phone: hosterData.phone || '0000000000',
       eventFrequency: eventFrequency || 'monthly',
@@ -82,23 +76,23 @@ function HosterSetup() {
         if (result.token) {
           localStorage.setItem('token', result.token);
         }
-        navigate('/dashboard');
+        navigate('/Dashboard');
       } else {
         const message = result.message || result.error || 'Registration failed';
-        setError(message);
+        alert(message);
 
         if (
           message.toLowerCase().includes('already exists') ||
           message.toLowerCase().includes('duplicate') ||
           message.toLowerCase().includes('already in use')
         ) {
-          setError('User already exists. Redirecting to signup...');
-          setTimeout(() => navigate('/signup'), 2000);
+          alert('User already exists. Redirecting to signup...');
+          setTimeout(() => navigate('/'), 2000);
         }
       }
     } catch (err) {
       console.error('API error:', err);
-      setError('Something went wrong. Please try again.');
+      alert('Something went wrong. Please try again.');
     }
   };
 
@@ -111,25 +105,35 @@ function HosterSetup() {
         </div>
       </div>
 
-      <div className="hostersetup-info">
+      <form className="hostersetup-info" onSubmit={handleSubmit}>
         <div className="hostersetup-title-group">
           <h1>Let’s set things up for you.</h1>
           <p>Share your vision, and we’ll help make it real.</p>
         </div>
 
         <label className="hostersetup-label1">Your events frequency</label>
-        <input
-          className="hostersetup-simple-input"
-          placeholder="e.g. Weekly, Monthly"
+        <select
+          className="hostersetup-select-input"
           value={eventFrequency}
           onChange={(e) => setEventFrequency(e.target.value)}
-        />
+          required
+        >
+          <option value="">Select Event Frequency</option>
+          <option value="Daily">Daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Every Two Weeks">Every Two Weeks</option>
+          <option value="Monthly">Monthly</option>
+          <option value="Every Two Months">Every Two Months</option>
+          <option value="Annually ">Annually</option>
+          <option value="Twice a Year ">Twice a Year</option>
+        </select>
 
         <label className="hostersetup-label3">Average Size of Event</label>
         <select
           className="hostersetup-select-input"
           value={avgSize}
           onChange={(e) => setAvgSize(e.target.value)}
+          required
         >
           <option value="">Select size</option>
           <option value="100">100</option>
@@ -148,6 +152,7 @@ function HosterSetup() {
             value={eventInput}
             onChange={(e) => setEventInput(e.target.value)}
             onKeyDown={handleAddEvent}
+            required={events.length === 0}
           />
           <div className="hostersetup-eventsAdded">
             {events.map((ev, index) => (
@@ -167,9 +172,8 @@ function HosterSetup() {
           ))}
         </div>
 
-        {error && <p className="hostersetup-error-fields">{error}</p>}
-        <button className="hostersetup-next-button" onClick={handleNext}>Next</button>
-      </div>
+        <button type="submit" className="hostersetup-next-button">Next</button>
+      </form>
     </div>
   );
 }
