@@ -10,6 +10,8 @@ import edit from "../assets/pencil-write.png";
 import ticketLogo from "../assets/ticketLogo.png";
 
 function CreateEvent() {
+  
+const baseURL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const { hosterData, setHosterData } = useContext(HosterContext);
 
@@ -18,7 +20,6 @@ function CreateEvent() {
   const [isTicketsValid, setIsTicketsValid] = useState(false);
   const [isBankValid, setIsBankValid] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
 
   const defaultTitle = "Add a Title Here *";
   const defaultTagline = "Add a Tagline Here (optional)";
@@ -115,6 +116,7 @@ function CreateEvent() {
       </h2>
     );
   };
+
   const handleTicketSubmit = () => {
     if (!ticketTier.trim() || !ticketQuantity.trim() || !ticketPrice.trim())
       return;
@@ -173,23 +175,15 @@ function CreateEvent() {
   };
 
   const handleBasicSave = () => {
-    if(!eventTitle || eventTitle == defaultTitle){
-
+    if (!eventTitle || eventTitle === defaultTitle) {
       alert("Please Enter Event Title");
       return;
     }
-    if(uploadedFilesRef.current.length === 0){
-      
-      alert("Please Enter atleast one Image/Video");
+    if (uploadedFilesRef.current.length === 0) {
+      alert("Please Enter at least one Image/Video");
       return;
     }
-    if (
-      !location ||
-      !startTime ||
-      !endTime ||
-      !customURL
-    )
-      return;
+    if (!location || !startTime || !endTime || !customURL) return;
 
     setHosterData((prev) => ({
       ...prev,
@@ -202,10 +196,10 @@ function CreateEvent() {
       customURL,
       uploadedFiles: uploadedFilesRef.current,
     }));
-  setIsSubmitted(true);
+    setIsSubmitted(true);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const form1 = document.querySelector("#form1");
     if (!form1?.checkValidity()) {
       alert("Please submit all information");
@@ -215,13 +209,42 @@ function CreateEvent() {
       const form2 = document.querySelector("#form2");
       const form3 = document.querySelector("#form3");
 
-      if (!form2?.checkValidity() && !form3?.checkValidity()) {
+      if (!form2?.checkValidity() || !form3?.checkValidity()) {
         alert("Please submit all information");
         return;
       }
     }
 
-    navigate("/Dashboard");
+    // Prepare data for API call using HosterContext for portfolio, eventFrequency, and eventTypes
+    const eventData = {
+      title: eventTitle !== defaultTitle ? eventTitle : "",
+      description: description !== defaultDescription ? description : "",
+      media: hosterData.portfolio.length > 0 ? hosterData.portfolio[0] : (uploadedFilesRef.current.length > 0 ? uploadedFilesRef.current[0] : ""),
+      location: location,
+      event_type: hosterData.eventFrequency || "public",
+      categories: hosterData.eventTypes || [],
+    };
+
+    try {
+      const response = await fetch(`${baseURL}/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(eventData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create event");
+      }
+
+      const result = await response.json();
+      console.log("Event created:", result);
+      navigate("/Dashboard");
+    } catch (error) {
+      console.error("Error creating event:", error);
+      alert("Failed to create event. Please try again.");
+    }
   };
 
   return (
@@ -244,11 +267,7 @@ function CreateEvent() {
               <div className="create-title-section">
                 {renderEditableField("title", eventTitle, setEventTitle)}
                 {renderEditableField("tagline", tagline, setTagline)}
-                {renderEditableField(
-                  "description",
-                  description,
-                  setDescription
-                )}
+                {renderEditableField("description", description, setDescription)}
               </div>
             </div>
 
@@ -271,7 +290,10 @@ function CreateEvent() {
                 className="create-input"
                 placeholder="Enter your Location/Venue"
                 value={location}
-                onChange={(e) => {setLocation(e.target.value); setIsSubmitted(false);}}
+                onChange={(e) => {
+                  setLocation(e.target.value);
+                  setIsSubmitted(false);
+                }}
                 required
               />
             </div>
@@ -287,7 +309,10 @@ function CreateEvent() {
                     type="datetime-local"
                     className="create-input"
                     value={startTime}
-                    onChange={(e) => {setStartTime(e.target.value); setIsSubmitted(false);}}
+                    onChange={(e) => {
+                      setStartTime(e.target.value);
+                      setIsSubmitted(false);
+                    }}
                     required
                   />
                 </div>
@@ -297,7 +322,10 @@ function CreateEvent() {
                     type="datetime-local"
                     className="create-input"
                     value={endTime}
-                    onChange={(e) => {setEndTime(e.target.value); setIsSubmitted(false);}}
+                    onChange={(e) => {
+                      setEndTime(e.target.value);
+                      setIsSubmitted(false);
+                    }}
                     required
                   />
                 </div>
@@ -313,18 +341,24 @@ function CreateEvent() {
                 className="create-input"
                 placeholder="e.g. bewhoop.com/events/my-event-name"
                 value={customURL}
-                onChange={(e) => {setCustomURL(e.target.value); setIsSubmitted(false);}}
+                onChange={(e) => {
+                  setCustomURL(e.target.value);
+                  setIsSubmitted(false);
+                }}
                 required
               />
             </div>
 
             <div className="create-save-button-container">
-              <button type="submit" className="create-save-button" 
-              style={{ backgroundColor: isSubmitted ? '#ccc' : '#BE0000' }}>
+              <button
+                type="submit"
+                className="create-save-button"
+                style={{ backgroundColor: isSubmitted ? "#ccc" : "#BE0000" }}
+              >
                 Save Changes
               </button>
             </div>
-            
+
             <div className="create-box">
               <div className="create-box-header">
                 <label className="create-label2">
@@ -339,7 +373,6 @@ function CreateEvent() {
                 </label>
               </div>
             </div>
-
           </form>
           {ticketed && (
             <>

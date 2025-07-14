@@ -13,6 +13,8 @@ import Profile from './pages/Profile.jsx'
 import Placeholder from './pages/PlaceHolder.jsx'
 import VendorProfile from './pages/VendorProfile.jsx'
 import ProtectedRoute from './additional_components/ProtectedRoute.jsx'
+import EventDetails from './pages/EventDetails.jsx'
+import MyEvents from './pages/MyEvents.jsx'
 
 function App() {
   return (
@@ -61,6 +63,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <VendorMarketplace />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/EventDetails"
+            element={
+              <ProtectedRoute>
+                <EventDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/MyEvents"
+            element={
+              <ProtectedRoute>
+                <MyEvents />
               </ProtectedRoute>
             }
           />

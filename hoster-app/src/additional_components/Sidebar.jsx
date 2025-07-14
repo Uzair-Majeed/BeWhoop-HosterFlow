@@ -51,13 +51,11 @@ function Sidebar() {
 
           <li
             className={`nav-item ${
-              isActive('/CreateEvent') ||
-              isActive('/EventTickets') ||
-              isActive('/BankDetails')
+              isActive('/MyEvents')
                 ? 'active'
                 : ''
             }`}
-            onClick={() => navigate('/CreateEvent')}
+            onClick={() => navigate('/MyEvents')}
           >
             <FaCalendarDays className="nav-icon" />
             <a>My Events</a>

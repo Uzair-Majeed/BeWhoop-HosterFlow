@@ -22,6 +22,7 @@ export const HosterProvider = ({ children }) => {
     },
     portfolio: [],
     profilePhoto: null,
+    eventIDs: [],
   });
 
   return (

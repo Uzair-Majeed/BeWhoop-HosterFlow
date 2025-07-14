@@ -6,7 +6,7 @@ import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import VendorCard from '../additional_components/VendorCard.jsx';
 import '../styles/VendorMarketplace.css';
-import placeholderImage from '../assets/UploadPic.png';
+import placeholderImage from '../assets/placeholder-image.png';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -62,7 +62,7 @@ const VendorMarketplace = () => {
                 <Search className="vendor-search-icon" size={18} />
                 <input
                   type="text"
-                  placeholder="Search by vendor name"
+                  placeholder="Search by vendor name or city"
                   className="vendor-search-input"
                   value={searchQuery}
                   onChange={handleSearchChange}
