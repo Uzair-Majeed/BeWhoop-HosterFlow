@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import debounce from 'lodash/debounce';
+import toast from 'react-hot-toast'; // ✅ Import toast
 import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import VendorCard from '../additional_components/VendorCard.jsx';
@@ -34,6 +35,7 @@ const VendorMarketplace = () => {
       setVendors(result.vendors || []);
     } catch (error) {
       console.error('Error fetching vendors:', error);
+      toast.error('Failed to fetch vendors'); // ✅ Toast error on failure
     }
   };
 

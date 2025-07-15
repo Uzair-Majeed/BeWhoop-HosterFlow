@@ -15,11 +15,30 @@ import VendorProfile from './pages/VendorProfile.jsx'
 import ProtectedRoute from './additional_components/ProtectedRoute.jsx'
 import EventDetails from './pages/EventDetails.jsx'
 import MyEvents from './pages/MyEvents.jsx'
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   return (
     <BrowserRouter>
       <HosterProvider>
+          <Toaster position="top-center" toastOptions={{
+    success: {
+      style: {
+        fontSize: '16px',
+        maxWidth: '500px',
+        padding: '16px 24px',
+      },
+    },
+    error: {
+      style: {
+        fontSize: '16px',
+        maxWidth: '500px',
+        padding: '16px 24px',
+        backgroundColor: '#ffefef',
+        color: '#d32f2f',
+      },
+    },
+  }}/>
         <Routes>
           {/* Public onboarding routes */}
           <Route path="/" element={<Signup />} />

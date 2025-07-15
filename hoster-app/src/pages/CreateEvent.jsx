@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
 import "../styles/CreateEvent.css";
 import Header from "../additional_components/Header.jsx";
 import Sidebar from "../additional_components/Sidebar.jsx";
@@ -10,8 +11,7 @@ import edit from "../assets/pencil-write.png";
 import ticketLogo from "../assets/ticketLogo.png";
 
 function CreateEvent() {
-  
-const baseURL = import.meta.env.VITE_API_BASE_URL;
+  const baseURL = import.meta.env.VITE_API_BASE_URL;
   const navigate = useNavigate();
   const { hosterData, setHosterData } = useContext(HosterContext);
 
@@ -117,9 +117,26 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
     );
   };
 
-  const handleTicketSubmit = () => {
-    if (!ticketTier.trim() || !ticketQuantity.trim() || !ticketPrice.trim())
+  const handleEditTicket = (ticket) => {
+    setEditMode(true);
+    setEditTicketId(ticket.id);
+    setTicketTier(ticket.tier);
+    setTicketPrice(ticket.price);
+    setTicketQuantity(ticket.quantity);
+  };
+
+  const handleDeleteTicket = (ticketId) => {
+    const updatedTickets = tickets.filter((ticket) => ticket.id !== ticketId);
+    setTickets(updatedTickets);
+    setHosterData((prev) => ({ ...prev, tickets: updatedTickets }));
+    toast.success("Ticket deleted successfully");
+  };
+
+  const handleTicketSubmit = (e) => {
+    if (!ticketTier.trim() || !ticketQuantity.trim() || !ticketPrice.trim()) {
+      toast.error("Please fill in all ticket fields");
       return;
+    }
 
     const updatedTickets = editMode
       ? tickets.map((ticket) =>
@@ -149,41 +166,48 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
     setTicketQuantity("");
     setEditMode(false);
     setEditTicketId(null);
+    toast.success(editMode ? "Ticket updated successfully" : "Ticket added successfully");
   };
 
   const handleBankSubmit = () => {
-    if (
-      !selectedBank ||
-      !/^\d{12,16}$/.test(accountNumber) ||
-      !/^[A-Za-z ]{3,}$/.test(accountName) ||
-      !agreeToTerms
-    )
-      return;
+  if (
+    !selectedBank ||
+    !/^\d{12,16}$/.test(accountNumber) ||
+    !/^[A-Za-z ]{3,}$/.test(accountName) ||
+    !agreeToTerms
+  ) {
+    toast.error("Please fill in all bank details correctly");
+    return;
+  }
 
-    const updatedBankDetails = {
-      selectedBank,
-      accountNo: accountNumber,
-      accountName,
-    };
-
-    setHosterData((prev) => ({
-      ...prev,
-      bankDetails: updatedBankDetails,
-    }));
-    setBankAdded(true);
-    setEditingBank(false);
+  const updatedBankDetails = {
+    selectedBank,
+    accountNo: accountNumber,
+    accountName,
   };
 
+  setHosterData((prev) => ({ ...prev, bankDetails: updatedBankDetails }));
+  setBankAdded(true);
+  setEditingBank(false);
+  toast.success(bankAdded ? "Bank details updated" : "Bank details added");
+};
+
+
   const handleBasicSave = () => {
-    if (!eventTitle || eventTitle === defaultTitle) {
-      alert("Please Enter Event Title");
+    if (!eventTitle || eventTitle === defaultTitle || !eventTitle.trim()) {
+    toast.error("Please enter an event title");
+    return;
+  }
+  if (uploadedFilesRef.current.length === 0) {
+    toast.error("Please upload at least one image or video");
+    return;
+  }
+  
+    const form1 = document.querySelector("#form1");
+    if (!form1?.checkValidity()) {
+      toast.error("Please fill in all required fields");
       return;
     }
-    if (uploadedFilesRef.current.length === 0) {
-      alert("Please Enter at least one Image/Video");
-      return;
-    }
-    if (!location || !startTime || !endTime || !customURL) return;
 
     setHosterData((prev) => ({
       ...prev,
@@ -197,25 +221,27 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
       uploadedFiles: uploadedFilesRef.current,
     }));
     setIsSubmitted(true);
+    toast.success("Event details saved successfully");
   };
 
   const handleNext = async () => {
     const form1 = document.querySelector("#form1");
     if (!form1?.checkValidity()) {
-      alert("Please submit all information");
+      toast.error("Please fill in all required fields");
       return;
     }
     if (ticketed) {
-      const form2 = document.querySelector("#form2");
-      const form3 = document.querySelector("#form3");
 
-      if (!form2?.checkValidity() || !form3?.checkValidity()) {
-        alert("Please submit all information");
+      if (tickets.length === 0) {
+        toast.error("Please add at least one ticket");
+        return;
+      }
+      if (!bankAdded) {
+        toast.error("Please save bank details");
         return;
       }
     }
 
-    // Prepare data for API call using HosterContext for portfolio, eventFrequency, and eventTypes
     const eventData = {
       title: eventTitle !== defaultTitle ? eventTitle : "",
       description: description !== defaultDescription ? description : "",
@@ -225,6 +251,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
       categories: hosterData.eventTypes || [],
     };
 
+    const toastId = toast.loading("Creating event...");
     try {
       const response = await fetch(`${baseURL}/events`, {
         method: "POST",
@@ -240,10 +267,11 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
 
       const result = await response.json();
       console.log("Event created:", result);
+      toast.success("Event created successfully", { id: toastId });
       navigate("/Dashboard");
     } catch (error) {
       console.error("Error creating event:", error);
-      alert("Failed to create event. Please try again.");
+      toast.error("Failed to create event. Please try again.", { id: toastId });
     }
   };
 
@@ -278,6 +306,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
               </label>
               <FileUpload
                 onFileChange={(files) => (uploadedFilesRef.current = files)}
+                required
               />
             </div>
 
@@ -346,6 +375,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
                   setIsSubmitted(false);
                 }}
                 required
+                pattern="^https?://[a-zA-Z0-9.-]+/events/[a-zA-Z0-9-]+"
               />
             </div>
 
@@ -376,7 +406,6 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
           </form>
           {ticketed && (
             <>
-              {/* Ticket Form */}
               <form
                 id="form2"
                 className="create-form-wrapper"
@@ -410,7 +439,7 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
                         placeholder="Price Per Ticket"
                         value={ticketPrice}
                         onChange={(e) => setTicketPrice(e.target.value)}
-                        pattern="\d+"
+                        pattern="\d+(\.\d{1,2})?"
                         required
                       />
                     </div>
@@ -418,7 +447,6 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
                     <button
                       type="submit"
                       className="tickets-add-ticket-button"
-                      onClick={handleTicketSubmit}
                     >
                       {editMode ? "Update Ticket" : "Add Ticket"}
                     </button>
@@ -459,86 +487,85 @@ const baseURL = import.meta.env.VITE_API_BASE_URL;
                 </div>
               </form>
 
-              {/* Bank Form */}
-              <form
-                id="form3"
-                className="create-form-wrapper"
-                onSubmit={(e) => e.preventDefault()}
-              >
-                <div className="bank-box">
-                  <label className="bank-label2">Bank Details</label>
+             <form
+        id="form3"
+        className="create-form-wrapper"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleBankSubmit();
+        }}
+      >
+        <div className="bank-box">
+          <label className="bank-label2">Bank Details</label>
 
-                  <select
-                    className="bank-select-input"
-                    value={selectedBank}
-                    onChange={(e) => setSelectedBank(e.target.value)}
-                    disabled={bankAdded && !editingBank}
-                    required
-                  >
-                    <option value="">Select Bank</option>
-                    <option value="HBL">HBL</option>
-                    <option value="UBL">UBL</option>
-                    <option value="Meezan">Meezan</option>
-                  </select>
+          <select
+            className="bank-select-input"
+            value={selectedBank}
+            onChange={(e) => setSelectedBank(e.target.value)}
+            disabled={bankAdded && !editingBank}
+            required
+          >
+            <option value="">Select Bank</option>
+            <option value="HBL">HBL</option>
+            <option value="UBL">UBL</option>
+            <option value="Meezan">Meezan</option>
+          </select>
 
-                  <input
-                    className="bank-simple-input"
-                    type="text"
-                    placeholder="Account Number"
-                    value={accountNumber}
-                    onChange={(e) => setAccountNumber(e.target.value)}
-                    disabled={bankAdded && !editingBank}
-                    pattern="\d{12,16}"
-                    required
-                  />
+          <input
+            className="bank-simple-input"
+            type="text"
+            placeholder="Account Number"
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            disabled={bankAdded && !editingBank}
+            pattern="\d{12,16}"
+            required
+          />
 
-                  <input
-                    className="bank-simple-input"
-                    type="text"
-                    placeholder="Account Name"
-                    value={accountName}
-                    onChange={(e) => setAccountName(e.target.value)}
-                    disabled={bankAdded && !editingBank}
-                    pattern="[A-Za-z ]{3,}"
-                    required
-                  />
+          <input
+            className="bank-simple-input"
+            type="text"
+            placeholder="Account Name"
+            value={accountName}
+            onChange={(e) => setAccountName(e.target.value)}
+            disabled={bankAdded && !editingBank}
+            pattern="[A-Za-z ]{3,}"
+            required
+          />
 
-                  <div className="bank-checkbox-agreement">
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={agreeToTerms}
-                        onChange={(e) => setAgreeToTerms(e.target.checked)}
-                        required
-                      />
-                      <span>
-                        Admit that it is in review and will be published in 1
-                        month of time
-                      </span>
-                    </label>
-                  </div>
+          <div className="bank-checkbox-agreement">
+            <label>
+              <input
+                type="checkbox"
+                checked={agreeToTerms}
+                onChange={(e) => setAgreeToTerms(e.target.checked)}
+                disabled={bankAdded && !editingBank}
+                required
+              />
+              <span>
+                Admit that it is in review and will be published in 1 month of time
+              </span>
+            </label>
+          </div>
 
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    {!bankAdded || editingBank ? (
-                      <button
-                        type="submit"
-                        className="bank-add-ticket-button"
-                        onClick={handleBankSubmit}
-                      >
-                        {bankAdded ? "Save Changes" : "Add Account"}
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="bank-add-ticket-button"
-                        onClick={() => setEditingBank(true)}
-                      >
-                        Edit Bank
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </form>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+  <button
+    type="button"
+    className="bank-add-ticket-button"
+    onClick={() => {
+      if (editingBank) {
+        handleBankSubmit();  // Save when already editing
+      } else {
+        setEditingBank(true);  // Enable editing when locked
+      }
+    }}
+  >
+    {editingBank ? "Save Changes" : bankAdded ? "Edit Bank" : "Add Account"}
+  </button>
+</div>
+
+        </div>
+      </form>
             </>
           )}
 

@@ -7,12 +7,12 @@ import fbIcon from '../assets/FB-Icon.png';
 import whIcon from '../assets/WH-Icon.png';
 import { HosterContext } from '../contexts/HosterContext.jsx';
 import TOS from '../additional_components/TOS.jsx';
+import toast from 'react-hot-toast';
 
 const Signup = () => {
   const [realPassword, setRealPassword] = useState('');
   const [maskedPassword, setMaskedPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
-  const [error, setError] = useState('');
   const [showTOS, setShowTOS] = useState(false);
   const { setHosterData } = useContext(HosterContext);
   const navigate = useNavigate();
@@ -31,11 +31,26 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const form = e.target;
-    const fullName = form.fullName.value;
-    const email = form.email.value;
+    const fullName = form.fullName.value.trim();
+    const email = form.email.value.trim();
+
+    if (fullName.length < 3) {
+      toast.error('Please enter a valid Full Name.');
+      return;
+    }
+
+    if (!email.includes('@') || !email.includes('.')) {
+      toast.error('Please enter a valid Email.');
+      return;
+    }
+
+    if (realPassword.length < 6) {
+      toast.error('Password must be at least 6 characters.');
+      return;
+    }
 
     if (!termsAccepted) {
-      setError('You must accept the terms and conditions');
+      toast.error('You must accept the terms and conditions.');
       return;
     }
 
@@ -46,12 +61,12 @@ const Signup = () => {
       password: realPassword,
     }));
 
+    toast.success('Success saving information...');
     navigate('/settingUp');
   };
 
   return (
     <div className="signup-vendor-card">
-      {/* Left panel */}
       <div className="signup-left-bg" style={{ backgroundImage: `url(${signup})` }}>
         <div className="signup-text-group">
           <h1>Connect with Hosts</h1>
@@ -59,7 +74,6 @@ const Signup = () => {
         </div>
       </div>
 
-      {/* Signup form */}
       <form className="signup-vendor-info" onSubmit={handleSubmit}>
         <div className="signup-title-group">
           <h1>Join as an Event Host</h1>
@@ -71,7 +85,6 @@ const Signup = () => {
           name="fullName"
           className="signup-simple-input"
           placeholder="Example: Henna Adam"
-          required
         />
 
         <label className="signup-label1">Email</label>
@@ -80,7 +93,6 @@ const Signup = () => {
           type="email"
           className="signup-simple-input"
           placeholder="Henna_Adam@gmail.com"
-          required
         />
 
         <div className="signup-password-container">
@@ -95,7 +107,6 @@ const Signup = () => {
           value={maskedPassword}
           onChange={handlePasswordChange}
           minLength={6}
-          required
         />
 
         <label className="signup-label3">
@@ -103,7 +114,6 @@ const Signup = () => {
             type="checkbox"
             checked={termsAccepted}
             onChange={(e) => setTermsAccepted(e.target.checked)}
-            required
           />
           <a
             onClick={() => setShowTOS(true)}
@@ -112,8 +122,6 @@ const Signup = () => {
             I accept terms and conditions
           </a>
         </label>
-
-        {error && <p className="signup-error-fields">{error}</p>}
 
         <button type="submit" className="signup-next-button">
           SignUp
@@ -124,7 +132,6 @@ const Signup = () => {
           <br />
         </label>
 
-        {/* Social Logins */}
         <div className="signup-social-icons">
           <div className="signup-divider-with-text">
             <span className="signup-line"></span>

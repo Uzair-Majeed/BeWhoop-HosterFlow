@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; 
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import '../styles/MyEvents.css';
 import placeholderImage from '../assets/events_placeholder.jpg';
+import toast from 'react-hot-toast'; // ✅ Import toast
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -13,32 +14,33 @@ const MyEvents = () => {
 
   // ✅ Fetch events from backend
   const fetchEvents = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    console.log("🔐 Token:", token);
+    try {
+      const token = localStorage.getItem('token');
+      console.log("🔐 Token:", token);
 
-    const response = await fetch(`${baseURL}/vendor/events`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+      const response = await fetch(`${baseURL}/vendor/events`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log("📡 Response Status:", response.status);
+
+      const result = await response.json();
+      console.log("📦 Response Body:", result);
+
+      if (!response.ok) {
+        toast.error('Failed to fetch events'); // ✅ Toast for failed response
+        throw new Error(result?.message || 'Failed to fetch events');
       }
-    });
 
-    console.log("📡 Response Status:", response.status);
-
-    const result = await response.json();
-    console.log("📦 Response Body:", result);
-
-    if (!response.ok) {
-      throw new Error(result?.message || 'Failed to fetch events');
+      setEvents(result.events || []);
+    } catch (error) {
+      console.error('❌ Error fetching events:', error.message);
+      toast.error('Error fetching events'); // ✅ Toast for catch block
     }
-
-    setEvents(result.events || []);
-  } catch (error) {
-    console.error('❌ Error fetching events:', error.message);
-  }
-};
-
+  };
 
   useEffect(() => {
     fetchEvents();

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import '../styles/EventDetails.css';
+import toast from 'react-hot-toast'; // ✅ Import toast
 
 const EventDetails = () => {
   const { state } = useLocation();
@@ -10,6 +11,8 @@ const EventDetails = () => {
   const navigate = useNavigate();
 
   if (!event) {
+    toast.error('No event data found!'); // ✅ Toast error when event is missing
+
     return (
       <div className="event-details-wrapper">
         <Sidebar />

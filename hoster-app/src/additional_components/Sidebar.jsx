@@ -11,8 +11,9 @@ import {
   FaRegUser,
   FaGears,
   FaUnlock,
-} from 'react-icons/fa6'; 
+} from 'react-icons/fa6';
 import './Sidebar.css';
+import toast from 'react-hot-toast'; // ✅ Import toast
 
 function Sidebar() {
   const { setHosterData } = useContext(HosterContext);
@@ -23,12 +24,18 @@ function Sidebar() {
   const isActive = (path) => currentPath === path;
 
   const handleLogout = () => {
-    // Clear context
-    setHosterData({});
-    // Remove token
-    localStorage.removeItem('token');
-    // Redirect to home/login
-    navigate('/');
+    const toastId = toast.loading('Logging out...'); // ✅ Toast loading
+
+    setTimeout(() => {
+      // Clear context
+      setHosterData({});
+      // Remove token
+      localStorage.removeItem('token');
+      // Success message
+      toast.success('Logged out successfully.', { id: toastId });
+      // Redirect to home/login
+      navigate('/');
+    }, 1200); // Simulated logout delay
   };
 
   return (
@@ -50,11 +57,7 @@ function Sidebar() {
           <hr className="sidebar-divider" />
 
           <li
-            className={`nav-item ${
-              isActive('/MyEvents')
-                ? 'active'
-                : ''
-            }`}
+            className={`nav-item ${isActive('/MyEvents') ? 'active' : ''}`}
             onClick={() => navigate('/MyEvents')}
           >
             <FaCalendarDays className="nav-icon" />

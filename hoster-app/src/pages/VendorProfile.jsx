@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast'; // ✅ Import toast
 import Sidebar from '../additional_components/Sidebar';
 import Header from '../additional_components/Header';
 import '../styles/VendorProfile.css';
@@ -7,6 +8,12 @@ import '../styles/VendorProfile.css';
 function VendorProfile() {
   const location = useLocation();
   const { vendor, image } = location.state || {};
+
+  useEffect(() => {
+    if (!vendor) {
+      toast.error('Vendor not found. Please return to Marketplace.'); // ✅ Toast error on missing vendor
+    }
+  }, [vendor]);
 
   if (!vendor) {
     return (

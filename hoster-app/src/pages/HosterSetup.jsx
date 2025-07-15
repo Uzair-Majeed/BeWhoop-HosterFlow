@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '../styles/HosterSetup.css';
 import Bg from '../assets/Bg-2.png';
 import { HosterContext } from '../contexts/HosterContext.jsx';
+import toast from 'react-hot-toast';
 
 const baseURL = import.meta.env.VITE_API_BASE_URL;
 
@@ -42,6 +43,21 @@ function HosterSetup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!eventFrequency) {
+      toast.error('Please select your event frequency.');
+      return;
+    }
+
+    if (!avgSize) {
+      toast.error('Please select the average event size.');
+      return;
+    }
+
+    if (events.length === 0) {
+      toast.error('Please add at least one event type.');
+      return;
+    }
+
     const updatedData = {
       ...hosterData,
       eventFrequency,
@@ -62,6 +78,8 @@ function HosterSetup() {
       password: hosterData.password || 'defaultpassword',
     };
 
+    toast.loading('Submitting your details...');
+
     try {
       const response = await fetch(`${baseURL}/onboarding/hosts`, {
         method: 'POST',
@@ -70,29 +88,31 @@ function HosterSetup() {
       });
 
       const result = await response.json();
-      console.log(result);
+      toast.dismiss(); // remove loading toast
 
       if (response.ok && result.status === 'success') {
+        toast.success('Host profile created successfully!');
         if (result.token) {
           localStorage.setItem('token', result.token);
         }
         navigate('/Dashboard');
       } else {
         const message = result.message || result.error || 'Registration failed';
-        alert(message);
+        toast.error(message);
 
         if (
           message.toLowerCase().includes('already exists') ||
           message.toLowerCase().includes('duplicate') ||
           message.toLowerCase().includes('already in use')
         ) {
-          alert('User already exists. Redirecting to signup...');
+          toast.error('User already exists. Redirecting to signup...');
           setTimeout(() => navigate('/'), 2000);
         }
       }
     } catch (err) {
+      toast.dismiss();
       console.error('API error:', err);
-      alert('Something went wrong. Please try again.');
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
@@ -116,7 +136,6 @@ function HosterSetup() {
           className="hostersetup-select-input"
           value={eventFrequency}
           onChange={(e) => setEventFrequency(e.target.value)}
-          required
         >
           <option value="">Select Event Frequency</option>
           <option value="Daily">Daily</option>
@@ -133,7 +152,6 @@ function HosterSetup() {
           className="hostersetup-select-input"
           value={avgSize}
           onChange={(e) => setAvgSize(e.target.value)}
-          required
         >
           <option value="">Select size</option>
           <option value="100">100</option>
@@ -152,7 +170,6 @@ function HosterSetup() {
             value={eventInput}
             onChange={(e) => setEventInput(e.target.value)}
             onKeyDown={handleAddEvent}
-            required={events.length === 0}
           />
           <div className="hostersetup-eventsAdded">
             {events.map((ev, index) => (

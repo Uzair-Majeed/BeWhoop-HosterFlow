@@ -4,6 +4,7 @@ import Header from '../additional_components/Header';
 import defaultImage from '../assets/UploadPic.png';
 import { useContext, useRef } from 'react';
 import { HosterContext } from '../contexts/HosterContext.jsx';
+import toast from 'react-hot-toast'; // ✅ Import toast
 
 function Profile() {
   const { hosterData, setHosterData } = useContext(HosterContext);
@@ -11,11 +12,17 @@ function Profile() {
 
   const handlePhotoSelect = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
-      setHosterData((prev) => ({
-        ...prev,
-        profilePhoto: file,
-      }));
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        setHosterData((prev) => ({
+          ...prev,
+          profilePhoto: file,
+        }));
+      } else {
+        toast.error('Only image files are allowed.'); // ✅ Toast error for invalid file type
+      }
+    } else {
+      toast.error('No file selected.'); // ✅ Toast error for empty selection
     }
   };
 
